@@ -22,18 +22,19 @@ import model.EntityModels;
 public class Main {
 	public static int WIDTH = 1280;
 	public static int HEIGHT = 720;
+
 	private long window;
 	private GLFWVidMode vid;
-	//load models
+	// load models
 	private Loader loader = new Loader();
-	//rendering models
+	// rendering models
 	private Renderer renderer;
 	private Camera camera;
 	private Controls controls;
 	private Player player;
-	//contains all the models
+	// contains all the models
 	private EntityModels entityModels;
-	//entityManager handles collision for different entities
+	// entityManager handles collision for different entities
 	private List<EntityManager> entityManagers = new ArrayList<EntityManager>();
 	private EntityManager entityManager;
 	private Level0 level0;
@@ -44,12 +45,13 @@ public class Main {
 		entityModels = new EntityModels(loader, renderer.textureWidth, renderer.textureHeight);
 		controls = new Controls(window);
 		camera = new Camera(new Vector3f(0.0f, 0.0f, 2.0f), 0.0f, 0.0f);
-		
-		//each level will have different entityManager because each level has different collision box
+
+		// each level will have different entityManager because each level has different
+		// collision box
 		entityManagers.add(new EntityManager(4, 11, 11));
 		entityManager = entityManagers.get(0);
 		level0 = new Level0(entityModels, entityManager);
-		
+
 		player = new Player(new Vector3f(8.0f, -0.4f, 10.5f), entityModels);
 
 		double prevTime = GLFW.glfwGetTime();
@@ -57,10 +59,10 @@ public class Main {
 			double currentTime = GLFW.glfwGetTime();
 			float deltaTime = (float) (currentTime - prevTime);
 			prevTime = currentTime;
-			
-			//update game
+
+			// update game
 			tick(deltaTime);
-			//render game
+			// render game
 			render();
 			GLFW.glfwSwapBuffers(window);
 			GLFW.glfwPollEvents();
@@ -73,12 +75,12 @@ public class Main {
 	private void tick(float deltaTime) {
 		controls.tick();
 		renderer.getShader().start();
-		//update player
+		// update player
 		player.tick(camera, controls, entityManager, entityModels, deltaTime);
-		//update level
+		// update level
 		level0.tick(camera, player, entityModels, entityManager, deltaTime);
 		renderer.getShader().setMatrix4f("projection", Matrix4f.perspectiveProjection(70.0f, (float) WIDTH / (float) HEIGHT, 0.05f, 100.0f));
-		//update camera in the shader
+		// update camera in the shader
 		renderer.getShader().setMatrix4f("view", camera.getViewMatrix());
 		renderer.getShader().stop();
 	}
