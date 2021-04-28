@@ -18,6 +18,7 @@ public class MinHeap {
 			Node temp = heap.get(getParent(i));
 			heap.set(getParent(i), heap.get(i));
 			heap.set(i, temp);
+			i = getParent(i);
 		}
 	}
 
